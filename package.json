@@ -1,0 +1,15 @@
+{
+  "name": "bot-implementation",
+  "version": "1.0.0",
+  "description": "Bot Creation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Darshan Satya",
+  "license": "ISC",
+  "dependencies": {
+    "botbuilder": "^3.8.4",
+    "restify": "^5.0.1"
+  }
+}
