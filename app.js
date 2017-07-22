@@ -73,7 +73,9 @@ function (session, result) {
 
 bot.dialog('deals',require('./deals'));
 bot.dialog('facility',require('./facility'));
-bot.dialog('casual',require('./casual.js'));
+bot.dialog('casual',require('./casual'));
+bot.dialog('support',require('./support'));
+
 
 bot.dialog('reset', function (session) {
     // reset data
