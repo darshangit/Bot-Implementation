@@ -12,15 +12,22 @@ var UserAttachment= 'Attachment';
 
 module.exports = [
     function (session) {
-        builder.Prompts.text(session,'Please enter the Deal ID if known, else enter NO');
+        builder.Prompts.text(session,'Please enter the Deal ID if known, else reply NO');
     },
     function (session, result) {
         dealId = result.response;
-        builder.Prompts.text(session,'Please enter the Facility ID if known, else enter NO');
+        builder.Prompts.text(session,'Please enter the Facility ID if known, else reply NO');
     },
     function (session, result) {
         facilityId = result.response;
-        builder.Prompts.text(session,'Please add any attachments if you have, else enter NO');
+        builder.Prompts.text(session,'Do you have any attachments to add?');
+    },
+    function(session,result,next){
+        if(result.response == 'yes'){
+            builder.Prompts.attachment(session,'Please upload attachment in any format');
+        }else{
+            next();
+        }
     },
     function (session,result,next) {
         var msg = session.message;

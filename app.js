@@ -30,15 +30,25 @@ var Issuetypes = {
 
 var bot = new builder.UniversalBot(connector,
     [
-        function (session) {
+        function (session, result, next) {
             var userName = session.userData[UserNameKey];
-            session.send('Bonjour, I am SGBot at your service');
-            builder.Prompts.text(session, 'Before we get started , what should I call you ?');
+            if (userName == undefined || userName == null) {
+                session.send('Bonjour, I am SGBot at your service');
+                builder.Prompts.text(session, 'Before we get started , what should I call you ?');
+            } else {
+                next();
+            }
         },
-        function (session, result,next) {
-            session.userData[UserNameKey] = result.response;
-            session.privateConversationData[UserWelcomedKey] = true;
-            session.send('Welcome %s!', result.response);
+        function (session, result, next) {
+
+            if (session.privateConversationData[UserWelcomedKey]) {
+                session.send('Welcome back %s!', session.userData[UserNameKey]);
+            }
+            else {
+                session.userData[UserNameKey] = result.response;
+                session.send('Welcome Back %s!', session.userData[UserNameKey]);
+                session.privateConversationData[UserWelcomedKey] = true;
+            }
             next();
         },
         function (session) {
