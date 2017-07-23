@@ -2,15 +2,20 @@ var builder = require('botbuilder');
 
 var FunTypes = {
     FunnyGifs: 'Random funny gifs',
-    Hotel: 'Search for a Hotel'
-}
-var bot = new builder.UniversalBot(connector,   function (session) {});
+    Hotel: 'Search for a Hotel',
+    Weather: 'Weather',
+    Lucky: 'Feeling Lucky'
+};
+
 module.exports = [
     function (session) {
         builder.Prompts.choice(
             session,
-            'How May I help you ? \n',
-            [FunTypes.FunnyGifs, FunTypes.Hotel],
+            'How May I be of service? \n ',
+            [FunTypes.FunnyGifs,
+            FunTypes.Hotel,
+            FunTypes.Weather,
+            FunTypes.Lucky],
             {
                 maxRetries: 3,
                 retryPrompt: 'Not a valid option'
@@ -27,25 +32,18 @@ module.exports = [
 
         switch (selection) {
             case FunTypes.FunnyGifs:
-                return session.beginDialog('gifs');
+                session.send(new builder.Message(session).addAttachment(new builder.AnimationCard(session).title('Laughter is the best medicine').subtitle('Stressbuster').image(builder.CardImage.create(session, 'https://docs.microsoft.com/en-us/bot-framework/media/how-it-works/architecture-resize.png')).media([{ url: 'https://media.giphy.com/media/1aLFYfbItZcSk/giphy.gif' }])));
+                return session.endDialog();
             case FunTypes.Hotel:
-                  return session.send('hotels');
+                return session.send('Dev in progress');
+            case FunTypes.Weather:
+                return session.send('Dev in progress');
+            case FunTypes.Lucky:
+                return session.send('Dev in progress');
         }
     }
 ];
 
-bot.dialog('gifs', function (session) {
-    new builder.AnimationCard(session)
-        .title('Funnt Gif')
-        .subtitle('Stressbuster')
-        .image(builder.CardImage.create(session, 'https://docs.microsoft.com/en-us/bot-framework/media/how-it-works/architecture-resize.png'))
-        .media([
-            { url: 'https://media.giphy.com/media/1aLFYfbItZcSk/giphy.gif' }
-        ]);
-        session.endDialog();
-});
 
-var connector = new builder.ChatConnector({
-    appId: process.env.MICROSOFT_APP_ID,
-    appPassword: process.env.MICROSOFT_APP_PASSWORD
-});
+
+
