@@ -1,3 +1,4 @@
 module.exports = function (session) {
-    session.send('Flights Dialog is not implemented and is instead being used to show Bot error handling');
+    session.send('Work in progress');
+    session.endDialog();
 };

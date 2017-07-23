@@ -96,3 +96,4 @@ bot.dialog('reset', function (session) {
     delete session.privateConversationData[UserWelcomedKey];
     session.endDialog('Resetting data...');
 }).triggerAction({ matches: /^reset/i });
+
