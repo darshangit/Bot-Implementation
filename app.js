@@ -1,3 +1,5 @@
+require('dotenv-extended').load();
+
 var restify = require('restify');
 var builder = require('botbuilder');
 
@@ -23,62 +25,63 @@ var Issuetypes = {
     Facility: 'Facility',
     Support: 'Contact Support',
     Casual: 'Fun with SGBot'
-}
+};
 
-var bot = new builder.UniversalBot(connector, [function (session) {
-    session.send("You said: %s", session.message.text);
-    var userName = session.userData[UserNameKey];
 
-    if (!userName) {
-        session.send('Bonjour, I am SGBot at your service');
-        builder.Prompts.text(session, 'Before we get started , what should I call you ?');
-    }
-},
-function (session, result) {
-    session.userData[UserNameKey] = results.response;
-    session.privateConversationData[UserWelcomedKey] = true;
-    session.endDialog('Welcome %s!', results.response);
-},
-function (session) {
-    builder.Prompts.choice(
-        session,
-        'What is the issue you are dealing with ? \n',
-        [Issuetypes.Deals, Issuetypes.Facility, Issuetypes.Support, Issuetypes.Casual],
-        {
-            maxRetries: 3,
-            retryPrompt: 'Not a valid option'
-        });
-},
-function (session, result) {
-    if (!result.response) {
-        // exhausted attemps and no selection, start over
-        session.send('Ooops! Too many attemps :( But don\'t worry, I\'m handling that exception and you can try again!');
-        return session.endDialog();
-    }
+var bot = new builder.UniversalBot(connector,
+    [
+        function (session) {
+            var userName = session.userData[UserNameKey];
+            session.send('Bonjour, I am SGBot at your service');
+            builder.Prompts.text(session, 'Before we get started , what should I call you ?');
+        },
+        function (session, result,next) {
+            session.userData[UserNameKey] = result.response;
+            session.privateConversationData[UserWelcomedKey] = true;
+            session.send('Welcome %s!', result.response);
+            next();
+        },
+        function (session) {
+            builder.Prompts.choice(
+                session,
+                'What is the issue you are dealing with ? \n',
+                [Issuetypes.Deals, Issuetypes.Facility, Issuetypes.Support, Issuetypes.Casual],
+                {
+                    maxRetries: 3,
+                    retryPrompt: 'Not a valid option'
+                });
+        },
+        function (session, result) {
+            if (!result.response) {
+                // exhausted attemps and no selection, start over
+                session.send('Ooops! Too many attemps :( But don\'t worry, I\'m handling that exception and you can try again!');
+                return session.endDialog();
+            }
 
-    // continue on proper dialog
-    var selection = result.response.entity;
-    switch (selection) {
-        case Issuetypes.Deals:
-            return session.beginDialog('deals');
-        case Issuetypes.Facility:
-            return session.beginDialog('facility');
-        case Issuetypes.Support:
-            return session.beginDialog('support');
-        case Issuetypes.Casual:
-            return session.beginDialog('casual');
-    }
-}
-]);
+            // continue on proper dialog
+            var selection = result.response.entity;
+            switch (selection) {
+                case Issuetypes.Deals:
+                    return session.beginDialog('deals');
+                case Issuetypes.Facility:
+                    return session.beginDialog('facility');
+                case Issuetypes.Support:
+                    return session.beginDialog('support');
+                case Issuetypes.Casual:
+                    return session.beginDialog('casual');
+            }
+        }
+    ]);
 
-bot.dialog('deals',require('./deals'));
-bot.dialog('facility',require('./facility'));
-bot.dialog('casual',require('./casual'));
-bot.dialog('support',require('./support'));
+bot.set('persistConversationData', true);
+
+bot.dialog('deals', require('./deals'));
+bot.dialog('facility', require('./facility'));
+bot.dialog('casual', require('./casual'));
+bot.dialog('support', require('./support'));
 
 
 bot.dialog('reset', function (session) {
-    // reset data
     delete session.userData[UserNameKey];
     delete session.privateConversationData[UserWelcomedKey];
     session.endDialog('Resetting data...');
