@@ -97,3 +97,19 @@ bot.dialog('reset', function (session) {
     session.endDialog('Resetting data...');
 }).triggerAction({ matches: /^reset/i });
 
+bot.dialog('thank', function (session) {
+    session.endDialog('My Pleasure...');
+}).triggerAction({ matches: /.*thank*/i });
+
+bot.dialog('ok', function (session) {
+    session.endDialog('Hmmmm...');
+}).triggerAction({ matches: /^ok$/i });
+
+bot.dialog('hate', function (session) {
+    session.endDialog('I am sorry, trying to be better...');
+}).triggerAction({ matches: [/.*hate*/i,/.*retard*/i,/.*nut*/i,/.*stupid*/i]});
+
+bot.dialog('nothing', function (session) {
+    session.endDialog('oh ok great.. Hibernating in 3..2..1');
+}).triggerAction({ matches: [/.*hate*/i,/.*retard*/i,/.*nut*/i]});
+
